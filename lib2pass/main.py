@@ -123,7 +123,7 @@ def score(bam_fn, output_bed_fn, ref_fasta_fn,
     aligned with minimap2. Filtered junctions can be used to realign reads in
     a second pass with minimap2.
 
-    Bam files must be mapped with minimap2 and have the long form CS tag, e.g.
+    Bam file must be mapped with minimap2 and have the long form CS tag, e.g.
 
     minimap2 -a --cs=long -k14 -x splice ref.fa reads.fq
     '''
@@ -161,6 +161,7 @@ def score(bam_fn, output_bed_fn, ref_fasta_fn,
 
 
 @main.command()
+@click.argument('bed-fns', required=True, nargs=-1)
 @_common_options(SCORE_MERGE_COMMON_OPTIONS)
 def merge(bed_fns, output_bed_fn, ref_fasta_fn,
           jad_size_threshold, primary_splice_local_dist, canonical_motifs,
@@ -171,6 +172,8 @@ def merge(bed_fns, output_bed_fn, ref_fasta_fn,
     2passtools merge: Merges bed files produced by 2passtools score on individual
     replicates and recalculates junction strength metrics. Can be used to create
     a unified junction set to realign reads from different replicates.
+    
+    Bed files should be in the 13 column format produced by 2passtools score.
     '''
     if random_seed is not None:
         np.random.seed(random_seed)
