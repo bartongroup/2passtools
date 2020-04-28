@@ -93,12 +93,6 @@ SCORE_MERGE_COMMON_OPTIONS = [
                   help='Logistic regression low confidence threshold for decision tree 2'),
     click.option('-ht', '--lr-high-confidence-threshold', default=0.6, type=float,
                   help='Logistic regression high confidence threshold for decision tree 2'),
-    click.option('--stranded/--unstranded', default=True,
-                  help=('Whether input data is stranded or unstranded. '
-                        'direct RNA is stranded, cDNA often isn\'t')),
-    click.option('-p', '--processes', default=1),
-    click.option('-s', '--random-seed', default=None, type=int),
-    click_log.simple_verbosity_option(log),
 ]
 
 def _common_options(common_options):
@@ -112,6 +106,12 @@ def _common_options(common_options):
 @main.command()
 @click.argument('bam-fn', required=True, nargs=1)
 @_common_options(SCORE_MERGE_COMMON_OPTIONS)
+@click.option('--stranded/--unstranded', default=True,
+              help=('Whether input data is stranded or unstranded. '
+                    'direct RNA is stranded, cDNA often isn\'t'))
+@click.option('-p', '--processes', default=1)
+@click.option('-s', '--random-seed', default=None, type=int)
+@click_log.simple_verbosity_option(log)
 def score(bam_fn, output_bed_fn, ref_fasta_fn,
           jad_size_threshold,
           primary_splice_local_dist, canonical_motifs,
@@ -163,6 +163,9 @@ def score(bam_fn, output_bed_fn, ref_fasta_fn,
 @main.command()
 @click.argument('bed-fns', required=True, nargs=-1)
 @_common_options(SCORE_MERGE_COMMON_OPTIONS)
+@click.option('-p', '--processes', default=1)
+@click.option('-s', '--random-seed', default=None, type=int)
+@click_log.simple_verbosity_option(log)
 def merge(bed_fns, output_bed_fn, ref_fasta_fn,
           jad_size_threshold, primary_splice_local_dist, canonical_motifs,
           lr_window_size, lr_kfold,

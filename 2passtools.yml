@@ -1,0 +1,14 @@
+name: 2passtools
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - python=3.6
+ - numpy
+ - click
+ - click-log
+ - pysam>=0.15
+ - ncls
+ - scikit-learn>=0.22
+ - pip:
+   - -e /cluster/ggs_lab/mtparker/two_pass_alignment_pipeline/scripts/2passtools
