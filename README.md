@@ -1,5 +1,7 @@
 # 2passtools
 
+![doi](https://zenodo.org/badge/242980365.svg)
+
 A package for filtering splice junctions extracted from noisy long read alignments generated using minimap2. These can then be used to perform second pass alignment with minimap2, feeding in the junctions using the `--junc-bed` flag.
 
 ## Installation:
