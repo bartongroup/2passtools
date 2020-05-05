@@ -13,12 +13,14 @@ A package for filtering splice junctions extracted from noisy long read alignmen
 git clone https://www.github.com/bartongroup/2passtools
 cd 2passtools
 conda env create -f 2passtools.yaml
+
+source activate 2passtools
 ```
 
 Alternatively 2passtools and the required packages can be installed using pip:
 
 ```
-pip install git+git://github.com/bartongroup/2passtools
+pip install git+git://github.com/bartongroup/2passtools.git
 ```
 
 
