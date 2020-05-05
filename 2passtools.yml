@@ -4,6 +4,7 @@ channels:
  - bioconda
 dependencies:
  - python=3.6
+ - pip
  - numpy
  - click
  - click-log
@@ -11,4 +12,4 @@ dependencies:
  - ncls
  - scikit-learn>=0.22
  - pip:
-   - -e /cluster/ggs_lab/mtparker/two_pass_alignment_pipeline/scripts/2passtools
+   - .
