@@ -152,18 +152,7 @@ The `2passtools merge` command is similar to `score`, but takes multiple 13-colu
 #### `Usage`:
 
 ```
-$ 2passtools filter --help
-Usage: 2passtools filter [OPTIONS] BED_FN
-
-  2passtools filter: Convenience tool to filter a junction bed and produce
-  6-column bed format which is compatible with minimap2.
-
-Options:
-  -o, --output-bed-fn TEXT  [required]
-  --exprs TEXT
-  -v, --verbosity LVL       Either CRITICAL, ERROR, WARNING, INFO or DEBUG
-  --help                    Show this message and exit.
-(4006b908) [mtparker@ningal envs]$ 2passtools merge --help
+$ 2passtools merge --help
 Usage: 2passtools merge [OPTIONS] BED_FNS...
 
   2passtools merge: Merges bed files produced by 2passtools score on
