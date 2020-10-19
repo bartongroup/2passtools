@@ -1,4 +1,5 @@
 from collections import defaultdict
+import random
 import logging
 import itertools as it
 
@@ -15,11 +16,10 @@ from .fastaparse import get_junction_seqs
 log = logging.getLogger('2passtools')
 
 
-SEQ_OHE = {'A': [1, 0, 0, 0],
-           'C': [0, 1, 0, 0],
-           'G': [0, 0, 1, 0],
-           'T': [0, 0, 0, 1],
-           'N': [0, 0, 0, 0]}
+SEQ_OHE = {'A': [1, 0, 0],
+           'C': [0, 1, 0],
+           'G': [0, 0, 1],
+           'T': [0, 0, 0]}
 
 
 def one_hot_sequence(seq):
@@ -28,7 +28,7 @@ def one_hot_sequence(seq):
         try:
             ohe.append(SEQ_OHE[base])
         except KeyError:
-            ohe.append(SEQ_OHE['N'])
+            ohe.append(SEQ_OHE[random.choice('ACGT')])
     return np.array(ohe)
 
 

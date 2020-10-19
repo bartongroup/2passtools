@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='2passtools',
-    version='0.2',
+    version='0.2.1',
     description=(
         'two pass alignment of long noisy reads'
     ),

@@ -104,7 +104,7 @@ def find_introns(aln, stranded=True):
                 get_junction_overhang_size(right_tag)
             )
             # info is intron motif
-            introns.append([left, right, junc_overhang, info])
+            introns.append([left, right, junc_overhang, ln, info])
             intron_motifs.append(info)
             pos = right
 
@@ -114,10 +114,11 @@ def find_introns(aln, stranded=True):
     else:
         strand = infer_strand_from_intron_motifs(intron_motifs, read_strand)
 
-    for start, end, overhang, motif in introns:
+    n_introns = len(introns)
+    for i, (start, end, overhang, length, motif) in enumerate(introns, 1):
         if strand == '-':
             motif = motif.translate(RC)[::-1]
-        yield chrom, start, end, strand, motif, overhang
+        yield chrom, start, end, strand, motif, overhang, length
 
 
 def build_donor_acceptor_ncls(introns, intron_counts, intron_jads, dist=20):
@@ -188,6 +189,7 @@ def assign_primary(chrom, start, end, strand, inv_trees):
 
 def fetch_introns_for_interval(bam_fn, chrom, start, end, stranded):
     motifs = {}
+    lengths = {}
     counts = Counter()
     intron_jads = Counter()
     with pysam.AlignmentFile(bam_fn) as bam:
@@ -196,12 +198,13 @@ def fetch_introns_for_interval(bam_fn, chrom, start, end, stranded):
             # which start before beginning of specified interval
             if aln.reference_start < start:
                 continue
-            for *i, m, junc_overhang in find_introns(aln, stranded):
+            for *i, m, ov, ln in find_introns(aln, stranded):
                 i = tuple(i)
                 motifs[i] = m
+                lengths[i] = ln
                 counts[i] += 1
-                intron_jads[i] = max(intron_jads[i], junc_overhang)
-    return motifs, counts, intron_jads
+                intron_jads[i] = max(intron_jads[i], ov)
+    return motifs, lengths, counts, intron_jads
 
 
 def get_bam_intervals(bam_fn, batch_size):
@@ -215,14 +218,16 @@ def get_bam_intervals(bam_fn, batch_size):
 
 def merge_intron_res(res):
     motifs = {}
+    lengths = {}
     counts = Counter()
     intron_jads = Counter()
-    for m, c, j in res:
+    for m, l, c, j in res:
         motifs.update(m)
+        lengths.update(l)
         counts += c
         for i, jad in j.items():
             intron_jads[i] = max(intron_jads[i], jad)
-    return motifs, counts, intron_jads
+    return motifs, lengths, counts, intron_jads
 
 
 def parse_introns(bam_fn, primary_splice_local_dist,
@@ -238,10 +243,11 @@ def parse_introns(bam_fn, primary_splice_local_dist,
                     bam_fn, *inv, stranded)
             for inv in get_bam_intervals(bam_fn, batch_size)
         )
-    motifs, counts, intron_jads = merge_intron_res(res)
+    motifs, lengths, counts, intron_jads = merge_intron_res(res)
 
     introns = list(motifs.keys())
     motifs = [motifs[i] for i in introns]
+    lengths = [lengths[i] for i in introns]
     counts = [counts[i] for i in introns]
     jad_label = [intron_jads[i] for i in introns]
 
@@ -255,5 +261,5 @@ def parse_introns(bam_fn, primary_splice_local_dist,
         is_primary_donor.append(d)
         is_primary_acceptor.append(a)
 
-    return (introns, motifs, counts, jad_label,
+    return (introns, motifs, lengths, counts, jad_label,
             is_primary_donor, is_primary_acceptor)
